@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../home/presentation/home_screen.dart';
+import '../../location/application/location_controller.dart';
 import '../application/onboarding_progress_controller.dart';
 
 class LocationPermissionScreen extends ConsumerWidget {
@@ -13,6 +14,9 @@ class LocationPermissionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(onboardingProgressProvider.notifier);
+    final locationState = ref.watch(locationControllerProvider);
+    final locationController =
+        ref.read(locationControllerProvider.notifier);
 
     Future<void> completeFlow(bool allowLocation) async {
       await controller.setLocationPermission(allowLocation);
@@ -45,14 +49,39 @@ class LocationPermissionScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Мы будем определять ваш город, чтобы показывать точное время молитв и ближайшую мечеть.',
+              locationState.value != null
+                  ? 'Определено: ${locationState.value!.displayName}'
+                  : 'Мы будем определять ваш город, чтобы показывать точное время молитв и ближайшую мечеть.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
+            if (locationState.hasError)
+              Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Text(
+                  locationState.error.toString(),
+                  style: const TextStyle(color: Colors.redAccent),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             const Spacer(),
             ElevatedButton(
-              onPressed: () => completeFlow(true),
-              child: const Text('Моё местоположение'),
+              onPressed: locationState.isLoading
+                  ? null
+                  : () async {
+                      await locationController.refresh();
+                      final updated =
+                          ref.read(locationControllerProvider);
+                      if (updated.hasError) {
+                        return;
+                      }
+                      if (updated.value != null) {
+                        await completeFlow(true);
+                      }
+                    },
+              child: locationState.isLoading
+                  ? const CircularProgressIndicator.adaptive()
+                  : const Text('Моё местоположение'),
             ),
             TextButton(
               onPressed: () => completeFlow(false),

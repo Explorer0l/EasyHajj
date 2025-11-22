@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Мы используем ваше местоположение, чтобы показывать точное время молитв.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Мы используем ваше местоположение, чтобы показывать точное время молитв.</string>
 </dict>
 </plist>
