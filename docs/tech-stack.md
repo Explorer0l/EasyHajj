@@ -4,7 +4,7 @@
 
 | UI Section | Capabilities | Technical Implications |
 |------------|--------------|------------------------|
-| Onboarding (login, permissions) | Federated auth (Google/Facebook), phone/email, skip flow, privacy consent, notification/location toggle screens | Social login SDKs, phone auth, custom privacy/cookie consent, secure token storage (Keychain/Keystore), runtime permission handling |
+| Onboarding (login, permissions) | Google + phone (SMS) auth, skip flow, privacy consent, notification/location toggle screens | Firebase Auth (Google + phone), custom privacy/cookie consent, secure token storage (Keychain/Keystore), runtime permission handling |
 | Today dashboard | Next prayer countdown, daily verse, quick links to dua/motivation/community/calendar | Background updates, accurate prayer-time math, offline cache, push refresh, animated gradients |
 | Prayer schedule | Daily schedule with alarm toggles per prayer, vertical timeline indicator | Local notifications with precise scheduling, timezone/daylight handling, persistent toggles in storage, background service to refresh times |
 | Calendar | Hijri/Gregorian calendar with events | Dual-calendar support, custom calendar component, remote-configurable events |
@@ -58,7 +58,7 @@ Conclusion: Flutter best balances visual fidelity, productivity, and platform pa
 | **Custom backend (NestJS, Django, etc.)** | Full control over business logic, custom prayer algorithms, self-managed deployment | Longer time-to-market, need DevOps, build auth/notifications orchestration | For later stage when rules/content workflows become complex |
 
 Recommended strategy:
-1. Start with **Firebase** for Auth (email, phone, Google, Facebook), Firestore for content (motivation, community posts, dua catalog), Storage for images, Cloud Functions for moderation tasks, and Cloud Messaging for notifications.
+1. Start with **Firebase** for Auth (Google + phone per MVP), Firestore for content (motivation, community posts, dua catalog), Storage for images, Cloud Functions for moderation tasks, and Cloud Messaging for notifications.
 2. Mirror critical collections to `SQLite/isar` on device for offline-first UI.
 3. If you later require advanced reporting or on-prem hosting, transition content feeds to Supabase/Postgres while keeping Firebase Cloud Messaging for pushes.
 
